@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+from dateutil.relativedelta import relativedelta
 
 class Skiftlag:
     def __init__(self, namn, startperiod, ref_datum):
@@ -60,9 +61,14 @@ def main():
     start_datum = datetime(int(datum1[0]), int(datum1[1]), int(datum1[2]))
     slut_datum = datetime(int(datum2[0]), int(datum2[1]), int(datum2[2]))
 
+    skillnad = relativedelta(slut_datum, start_datum)
+    
+    ddag = skillnad.days
+    dmon = skillnad.months + ddag/30
+
     summa = lon_summa(start_datum, slut_datum, skift.ref_datum, skift.startperiod)
 
-    print(f"Intjänade pengar: {round(summa*1.12)} kr \nNetto: {round(summa*1.12*0.67)}")
+    print(f"Intjänade pengar: {round(summa*1.12)}kr \nBrutto: {round(summa*1.12*0.67)}kr \nGenomsnittlig månadslön: {round((summa*1.12)/dmon)}kr")
 
 skftlg = 1.1025
 gl = 203.99*skftlg

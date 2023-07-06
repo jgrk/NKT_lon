@@ -10,7 +10,7 @@ class Skiftlag:
     def __str__(self) -> str:
         return self.namn
 
-def lon_summa(datum1, datum2, ref_datum, start_period): #lönnesumma uträknad från ett referensdatum till ett slutdatum
+def lon_summa(datum1, datum2, ref_datum, start_period, p_tot): #lönnesumma uträknad från ett referensdatum till ett slutdatum
     
     if datum1 < ref_datum :
         raise ValueError("Datumet är innan referensdatumet")
@@ -43,6 +43,34 @@ def lon_summa(datum1, datum2, ref_datum, start_period): #lönnesumma uträknad f
         
     return summa - summa1
 
+def dagslon(timlon: float) -> list:
+
+    skftlg = 1.1025
+    gl = timlon*skftlg
+    ob1 = 28.57
+    ob2 = 57.32
+    ob3 = 79.95
+    atf = 7.91
+
+    fmvar = 8.20*gl + 0.5*ob2 + 8.20*atf
+    fmhelg = 8.20*gl + 0.50*ob2 + 8.20*ob3 + 8.20*atf
+
+    emvar = 8.20*gl + 5.70*ob1 + 8.20*atf
+    emhelg = 8.20*gl + 5.70*ob1 + 8.20*ob3 + 8.20*atf
+
+    nattvar = 8.20*gl + 0.50*ob1 + 7.70*ob2 + 8.20*atf
+    nattfre = 8.20*gl + 0.50*ob1 + 7.70*ob2 + 7.70*ob3 + 8.20*atf
+    nattlor = 8.20*gl + 0.50*ob1 + 7.70*ob2 + 8.20*ob3 + 8.20*atf
+    nattson = 8.20*gl + 0.50*ob1 + 7.70*ob2 + 0.50*ob3 + 8.20*atf
+
+    p1 = [fmvar, fmvar, emvar, emvar, nattfre, nattlor, nattson]
+    p2 = [fmhelg, fmhelg, fmhelg, emvar, emvar, nattvar, nattvar]
+    p3 = [fmvar, fmvar, emhelg, emhelg, emhelg, nattvar, nattvar]
+
+    p_tot = [p1, p2, p3]
+
+    return p_tot
+
 def main():
 
 
@@ -69,30 +97,6 @@ def main():
     summa = lon_summa(start_datum, slut_datum, skift.ref_datum, skift.startperiod)
 
     print(f"Intjänade pengar: {round(summa*1.12)}kr \nBrutto: {round(summa*1.12*0.67)}kr \nGenomsnittlig månadslön: {round((summa*1.12)/dmon)}kr")
-
-skftlg = 1.1025
-gl = 203.99*skftlg
-ob1 = 28.57
-ob2 = 57.32
-ob3 = 79.95
-atf = 7.91
-
-fmvar = 8.20*gl + 0.5*ob2 + 8.20*atf
-fmhelg = 8.20*gl + 0.50*ob2 + 8.20*ob3 + 8.20*atf
-
-emvar = 8.20*gl + 5.70*ob1 + 8.20*atf
-emhelg = 8.20*gl + 5.70*ob1 + 8.20*ob3 + 8.20*atf
-
-nattvar = 8.20*gl + 0.50*ob1 + 7.70*ob2 + 8.20*atf
-nattfre = 8.20*gl + 0.50*ob1 + 7.70*ob2 + 7.70*ob3 + 8.20*atf
-nattlor = 8.20*gl + 0.50*ob1 + 7.70*ob2 + 8.20*ob3 + 8.20*atf
-nattson = 8.20*gl + 0.50*ob1 + 7.70*ob2 + 0.50*ob3 + 8.20*atf
-
-p1 = [fmvar, fmvar, emvar, emvar, nattfre, nattlor, nattson]
-p2 = [fmhelg, fmhelg, fmhelg, emvar, emvar, nattvar, nattvar]
-p3 = [fmvar, fmvar, emhelg, emhelg, emhelg, nattvar, nattvar]
-
-p_tot = [p1, p2, p3]
 
 a = Skiftlag("a", 2, datetime(2023, 1, 16))
 b = Skiftlag("b", 2, datetime(2023, 1, 23))

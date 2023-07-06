@@ -4,7 +4,9 @@ from source import *
 def submit():
     skift = skiftlag[var.get()-1]
 
-    gla = input1.get()
+    gl = float(input1.get())
+
+    p_tot = dagslon(gl)
    
     startdatum = input2.get()
     startdatum = startdatum.split("-")
@@ -19,7 +21,7 @@ def submit():
     ddag = skillnad.days
     dmon = skillnad.months + ddag/30
 
-    summa = lon_summa(startdatum, slutdatum, skift.ref_datum, skift.startperiod)
+    summa = lon_summa(startdatum, slutdatum, skift.ref_datum, skift.startperiod, p_tot)
 
     if skift and gl and startdatum and slutdatum:
         result_label.config(text=f"Intjänade pengar: {round(summa*1.12)}kr \nBrutto: {round(summa*1.12*0.67)}kr \nGenomsnittlig månadslön: {round((summa*1.12)/dmon)}kr")
@@ -49,22 +51,22 @@ option4 = tk.Radiobutton(window, text="Lag 4", variable=var, value=4)
 option5 = tk.Radiobutton(window, text="Lag 5", variable=var, value=5)
 
 # Create the input labels and entry fields
-input_label1 = tk.Label(window, text="Timlön:")
+input_label1 = tk.Label(window, text="Timlön i kr:")
 input1 = tk.Entry(window)
 
-input_label2 = tk.Label(window, text="Startdatum:")
+input_label2 = tk.Label(window, text="Startdatum yyyy-mm-dd:")
 input2 = tk.Entry(window)
 
-input_label3 = tk.Label(window, text="Slutdatum:")
+input_label3 = tk.Label(window, text="Slutdatum yyyy-mm-dd:")
 input3 = tk.Entry(window)
 
 # Create the submit button
 submit_btn = tk.Button(window, text="Visa lön", command=submit)
 
-reset_btn = tk.Button(window, text="Reset", command=reset)
+reset_btn = tk.Button(window, text="Återställ", command=reset)
 
 # Create the result label
-result_label = tk.Label(window, text="Här visas din slutgiltiga lön för den givna period", font=("Arial", 12, "bold"))
+result_label = tk.Label(window, text="Här visas din slutgilltiga lön för den givna period", font=("Arial", 12, "bold"))
 
 # Place the radio buttons in the window
 option1.pack()

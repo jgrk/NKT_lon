@@ -21,7 +21,7 @@ def submit():
     ddag = skillnad.days
     dmon = skillnad.months + ddag/30
 
-    summa = lon_summa(startdatum, slutdatum, skift.ref_datum, skift.startperiod, p_tot)
+    summa = lon_summa(startdatum, slutdatum, skift.ref_datum, skift.startperiod, skift.startdag, p_tot)
 
     if skift and gl and startdatum and slutdatum:
         result_label.config(text=f"Intjänade pengar: {round(summa*1.12)}kr \nBrutto: {round(summa*1.12*0.67)}kr \nGenomsnittlig månadslön: {round((summa*1.12)/dmon)}kr")
@@ -38,7 +38,7 @@ def reset():
 
 # Create the Tkinter window
 window = tk.Tk()
-window.title("Form")
+window.title("LÖNEUTRÄKNARE")
 
 # Create a Tkinter variable to store the selected option
 var = tk.IntVar()

@@ -2,29 +2,43 @@ from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
 
 class Skiftlag:
-    def __init__(self, namn, startperiod, ref_datum):
+    def __init__(self, namn, startperiod, startdag, ref_datum):
         self.namn = namn
         self.startperiod = startperiod
+        self.startdag = startdag
         self.ref_datum = ref_datum
 
     def __str__(self) -> str:
         return self.namn
+    
+def get_days_between_dates(start_date, end_date):
+    dates = []
+    current_date = start_date
 
-def lon_summa(datum1, datum2, ref_datum, start_period, p_tot): #lönnesumma uträknad från ett referensdatum till ett slutdatum
+    while current_date <= end_date:
+        dates.append(current_date)
+        current_date += timedelta(days=1)
+
+    return dates
+
+def lon_summa(datum1, datum2, ref_datum, start_period, startdag, p_tot): #lönnesumma uträknad från ett referensdatum till ett slutdatum
     
     if datum1 < ref_datum :
         raise ValueError("Datumet är innan referensdatumet")
 
+    stopdatum = get_days_between_dates(datetime(2023, 7, 16), datetime(2023, 7, 31))
+
     summa = 0
     period = start_period
-    dag_iter = 0
+    dag_iter = startdag
+    
 
     while ref_datum < datum2:
 
         if ref_datum == datum1:
             summa1 = summa
 
-        if dag_iter < len(p_tot[period]):
+        if dag_iter < len(p_tot[period]) and ref_datum not in stopdatum:
             summa += p_tot[period][dag_iter]
 
         if period == 0:
@@ -45,8 +59,7 @@ def lon_summa(datum1, datum2, ref_datum, start_period, p_tot): #lönnesumma utr�
 
 def dagslon(timlon: float) -> list:
 
-    skftlg = 1.1025
-    gl = timlon*skftlg
+    gl = timlon
     ob1 = 28.57
     ob2 = 57.32
     ob3 = 79.95
@@ -73,7 +86,6 @@ def dagslon(timlon: float) -> list:
 
 def main():
 
-
     for i in range(len(skiftlag)):
         print(i+1, skiftlag[i])
     
@@ -96,13 +108,13 @@ def main():
 
     summa = lon_summa(start_datum, slut_datum, skift.ref_datum, skift.startperiod)
 
-    print(f"Intjänade pengar: {round(summa*1.12)}kr \nBrutto: {round(summa*1.12*0.67)}kr \nGenomsnittlig månadslön: {round((summa*1.12)/dmon)}kr")
+    print(f"Intjänade pengar: {round(summa*1.12)}kr \nNetto: {round(summa*1.12*0.67)}kr \nGenomsnittlig månadslön: {round((summa*1.12)/dmon)}kr")
 
-a = Skiftlag("a", 2, datetime(2023, 1, 16))
-b = Skiftlag("b", 2, datetime(2023, 1, 23))
-c = Skiftlag("c", 2, datetime(2023, 1, 30))
-d = Skiftlag("d", 2, datetime(2023, 1, 9))
-e = Skiftlag("e", 2, datetime(2023, 1, 2))
+a = Skiftlag("a", 2, 0, datetime(2023, 1, 4))
+b = Skiftlag("b", 1, 2, datetime(2023, 1, 1))
+c = Skiftlag("c", 0, 6, datetime(2023, 1, 1))
+d = Skiftlag("d", 2, 4, datetime(2023, 1, 1))
+e = Skiftlag("e", 0, 0, datetime(2023, 1, 2))
 
 skiftlag = [a, b, c, d, e]
 
